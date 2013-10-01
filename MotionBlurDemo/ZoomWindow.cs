@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
@@ -67,15 +66,13 @@ namespace MotionBlurDemo
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
         {
-            if (msg == 0x46)
+            if (msg == 0x0018) // WM_SHOWWINDOW
             {
-                var mwp = (WindowPos)Marshal.PtrToStructure(lparam, typeof(WindowPos));
-
-                if ((mwp.flags & 0x0040) != 0)
+                if (wparam.ToInt32() != 0)
                 {
                     Animate();
+                    handled = true;
                 }
-                handled = true;
             }
             return IntPtr.Zero;
         }
@@ -87,23 +84,15 @@ namespace MotionBlurDemo
             var easeFunction = new ElasticEase {EasingMode = EasingMode.EaseOut, Oscillations = 1, Springiness = 10};
             content.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             var duration = AnimationDuration.TotalMilliseconds;
-            var actualWidth = content.DesiredSize.Width;
-            var actualHeight = content.DesiredSize.Height;
-            var transform = new ScaleTransform(0.0, 0.0);
-            transform.CenterX = actualWidth*0.5;
-            transform.CenterY = actualHeight*0.5;
+            var transform = new ScaleTransform(0.0, 0.0, content.DesiredSize.Width*0.5, content.DesiredSize.Height*0.5);
             content.RenderTransform = transform;
             ZoomBlurEffect zoomBlurEffect = null;
             if (MotionBlur)
             {
                 zoomBlurEffect = new ZoomBlurEffect();
-                content.Effect = zoomBlurEffect;
                 zoomBlurEffect.Center = new Point(0.5, 0.5);
             }
-            else
-            {
-                content.Effect = null;
-            }
+            content.Effect = zoomBlurEffect;
 
             var t = 0.0;
             Task.Run(() =>
@@ -137,17 +126,5 @@ namespace MotionBlurDemo
                 }
             });
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct WindowPos
-        {
-            public IntPtr hwnd;
-            public IntPtr hwndInsertAfter;
-            public int x;
-            public int y;
-            public int cx;
-            public int cy;
-            public int flags;
-        };
     }
 }
