@@ -104,12 +104,6 @@ namespace MotionBlurDemo
             {
                 content.Effect = null;
             }
-//            var rtb = new List<RenderTargetBitmap>();
-
-//            var bitmapImage = new BitmapImage(new Uri("test.png", UriKind.Relative));
-//            var visual = new Image {Source = bitmapImage, Width = 708};
-//            visual.Measure(new Size(708, 632));
-//            visual.Arrange(new Rect(0, 0, 708, 632));
 
             var t = 0.0;
             Task.Run(() =>
@@ -124,12 +118,6 @@ namespace MotionBlurDemo
                         {
                             content.LayoutTransform = null;
                             content.Effect = null;
-//                            var foo = new RenderTargetBitmap((int)_container.ActualWidth, (int)_container.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-//                            foo.Render(visual);
-//                            foo.Render(_container);
-//                            rtb.Add(foo);
-//                            SetWindowPos((PresentationSource.FromVisual(this) as HwndSource).Handle, 0, 
-//                                (int) (Left + 50), (int) (Top + 50), (int) (Width - 100), (int) (Height - 100), 0x108);
                         }, DispatcherPriority.Render);
                         break;
                     }
@@ -144,28 +132,9 @@ namespace MotionBlurDemo
                             zoomBlurEffect.BlurAmount = blur;
                         }
                         prevEase = ease;
-//                        var foo = new RenderTargetBitmap((int)_container.ActualWidth, (int)_container.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-//                        foo.Render(visual);
-//                        foo.Render(_container);
-//                        rtb.Add(foo);
                     }, DispatcherPriority.Render);
-//                    t = t + 0.1;
                     t = (Environment.TickCount - animationStartTime) / duration;
                 }
-                /*int i = 0;
-                foreach (var targetBitmap in rtb)
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        PngBitmapEncoder encoder = new PngBitmapEncoder();
-                        encoder.Frames.Add(BitmapFrame.Create(targetBitmap));
-                        using (var f = File.Create("_test" + i++ + ".png"))
-                        {
-                            encoder.Save(f);
-                            f.Flush();
-                        }
-                    });
-                }*/
             });
         }
 
